@@ -98,50 +98,99 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({1:[function(require,module,exports) {
+})({4:[function(require,module,exports) {
 'use strict';
 
-var _express = require('express');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var express = _interopRequireWildcard(_express);
+var _betterSqlite = require('better-sqlite3');
+
+var _betterSqlite2 = _interopRequireDefault(_betterSqlite);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var dbFilePath = './.data/sqlite.db';
+var db = new _betterSqlite2.default(dbFilePath);
+exports.default = db;
+},{}],2:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.create = create;
+exports.list = list;
+
+var _database = require('./database');
+
+var _database2 = _interopRequireDefault(_database);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var makeScore = function makeScore(obj) {
+    if (typeof obj.created_at === 'number' && typeof obj.value === 'number' && typeof obj.player === 'string') {
+        return obj;
+    }
+    return null;
+};
+_database2.default.prepare("\n  CREATE TABLE IF NOT EXISTS scores (\n    player      varchar,\n    value       integer,\n    created_at  timestamp NOT NULL,\n    PRIMARY KEY (player, created_at)\n  );").run();
+var insertScore = _database2.default.prepare("\n  INSERT INTO scores (player, value, created_at)\n    VALUES (@player, @value, @created_at)\n");
+function create(req, res) {
+    if (!req.body) {
+        return res.status(400).send({
+            message: "Body can't be empty."
+        });
+    }
+    var score = makeScore(req.body);
+    if (!score) {
+        return res.status(400).send({
+            message: 'Body is not a Score.'
+        });
+    }
+    try {
+        insertScore.run(score);
+    } catch (_a) {
+        return res.status(500).send();
+    }
+    return res.status(200).send();
+}
+var listScores = _database2.default.prepare("\n  SELECT * FROM scores\n");
+function list(_, res) {
+    try {
+        return res.status(200).send(listScores.all());
+    } catch (_a) {
+        return res.status(500).send();
+    }
+}
+},{"./database":4}],1:[function(require,module,exports) {
+'use strict';
 
 var _bodyParser = require('body-parser');
 
 var bodyParser = _interopRequireWildcard(_bodyParser);
 
-var _fs = require('fs');
+var _express = require('express');
+
+var _express2 = _interopRequireDefault(_express);
+
+var _scores = require('./scores');
+
+var scores = _interopRequireWildcard(_scores);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-var dbFile = './.data/sqlite.db';
-var exists = (0, _fs.existsSync)(dbFile);
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(dbFile);
-db.serialize(function () {
-    if (!exists) {
-        db.run("\n      CREATE TABLE Dreams (dream TEXT)\n    ");
-        console.log('New table Dreams created!');
-        db.serialize(function () {
-            db.run("\n        INSERT INTO Dreams (dream) \n               VALUES (\"Find and count some sheep\"), \n                      (\"Climb a really tall mountain\"),\n                      (\"Wash the dishes\")\n      ");
-        });
-    } else {
-        console.log('Database "Dreams" ready to go!');
-        db.each('SELECT * from Dreams', function (err, row) {
-            if (row) {
-                console.log('record:', row);
-            }
-        });
-    }
+var VERSION = 'v1';
+console.log('Running.');
+var app = (0, _express2.default)();
+app.use(bodyParser.json());
+app.post("/" + VERSION + "/scores", scores.create);
+app.get("/" + VERSION + "/scores", scores.list);
+var listener = app.listen('4321', function () {
+    console.log("Your app is listening on " + listener.address().port);
 });
-app.get('/getDreams', function (request, response) {
-    db.all('SELECT * from Dreams', function (err, rows) {
-        response.send(JSON.stringify(rows));
-    });
-});
-var listener = app.listen('3000', function () {
-    console.log('Your app is listening on port ' + listener.address().port);
-});
-},{}]},{},[1], null)
+},{"./scores":2}]},{},[1], null)
 //# sourceMappingURL=/server.map
