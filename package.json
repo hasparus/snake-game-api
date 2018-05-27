@@ -1,11 +1,8 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-  "name": "hello-sqlite",
-  "version": "0.0.1",
-  "description": "A simple Node app with SQLite as a database management system, instantly up and running.",
-  "main": "server.js",
+  "name": "snake-api",
+  "version": "0.1.0",
+  "description": "A simple Node app providing API for Snake Game Leaderboard.",
+  "main": "dist/server.js",
   "scripts": {
     "build": "PORT=80 parcel src/server.ts --target=node",
     "watch": "nodemon dist/server.js",
@@ -22,7 +19,7 @@
     "parcel-plugin-typescript": "^0.7.0"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-sqlite"
+    "url": "https://github.com/hasparus/snake-game-api"
   },
   "license": "MIT",
   "keywords": [
