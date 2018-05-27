@@ -1,7 +1,13 @@
 import Database from 'better-sqlite3';
+import { existsSync, mkdirSync } from 'fs';
 
-const dbFilePath = './.data/sqlite.db';
+const DATA_DIR = './.data';
+const FILENAME = 'sqlite.db';
 
-const db = new Database(dbFilePath);
+if (!existsSync(DATA_DIR)) {
+  mkdirSync(DATA_DIR);
+}
+
+const db = new Database(`${DATA_DIR}/${FILENAME}`);
 
 export default db;

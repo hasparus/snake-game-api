@@ -1,15 +1,14 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-  "name": "hello-sqlite",
-  "version": "0.0.1",
-  "description": "A simple Node app with SQLite as a database management system, instantly up and running.",
-  "main": "server.js",
+  "name": "snake-api",
+  "version": "0.1.0",
+  "description": "A simple Node app providing API for Snake Game Leaderboard.",
+  "main": "dist/server.js",
   "scripts": {
-    "build": "PORT=80 parcel src/server.ts --target=node",
-    "watch": "nodemon dist/server.js",
-    "start": "node dist/server.js"
+    "watch-compile": "parcel src/server.ts --target=node",
+    "watch-run": "nodemon dist/server.js",
+    "build": "parcel build src/server.ts --target=node",
+    "launch": "node dist/server.js",
+    "start": "npm run build && npm run launch"
   },
   "dependencies": {
     "@types/better-sqlite3": "^3.1.3",
@@ -19,16 +18,18 @@
     "express": "^4.16.3",
     "parcel": "^1.8.1",
     "parcel-bundler": "^1.8.1",
-    "parcel-plugin-typescript": "^0.7.0"
+    "parcel-plugin-typescript": "^0.7.1"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-sqlite"
+    "url": "https://github.com/hasparus/snake-game-api"
   },
   "license": "MIT",
   "keywords": [
     "node",
     "glitch",
-    "express"
+    "express",
+    "snake",
+    "api"
   ],
   "devDependencies": {
     "nodemon": "^1.17.5",
