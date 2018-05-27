@@ -7,7 +7,7 @@
   "description": "A simple Node app with SQLite as a database management system, instantly up and running.",
   "main": "server.js",
   "scripts": {
-    "build": "PORT=4321 parcel src/server.ts --target=node",
+    "build": "PORT=80 parcel src/server.ts --target=node",
     "watch": "nodemon dist/server.js",
     "start": "node dist/server.js"
   },
