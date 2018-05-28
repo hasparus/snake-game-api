@@ -35,6 +35,7 @@ const insertScore = db.prepare(`
 `); // in postgres we would do `to_timestamp(@created_at)`
 
 export function create(req: Request, res: Response) {
+  console.log("Create!");
   if (!req.body) {
     return res.status(400).send({
       message: "Body can't be empty.",
@@ -54,6 +55,7 @@ export function create(req: Request, res: Response) {
     return res.status(500).send();
   }
 
+  console.log("Created!");
   return res.status(200).send();
 }
 
