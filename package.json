@@ -7,8 +7,8 @@
     "watch-compile": "parcel src/server.ts --target=node",
     "watch-run": "nodemon dist/server.js",
     "build": "parcel build src/server.ts --target=node",
-    "start": "node dist/server.js",
-    "full-start": "npm run build && npm run start"
+    "launch": "node dist/server.js",
+    "start": "npm run build && npm run launch"
   },
   "dependencies": {
     "@types/better-sqlite3": "^3.1.3",
