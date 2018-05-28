@@ -30,12 +30,11 @@ db.prepare(
 ).run();
 
 const insertScore = db.prepare(`
-  INSERT INTO scores (player, value, created_at)
+  INSERT OR REPLACE INTO scores (player, value, created_at)
     VALUES (@player, @value, @created_at)
-`); // in postgres we would do `to_timestamp(@created_at)`
+`);
 
 export function create(req: Request, res: Response) {
-  console.log("Create!");
   if (!req.body) {
     return res.status(400).send({
       message: "Body can't be empty.",
@@ -51,11 +50,11 @@ export function create(req: Request, res: Response) {
 
   try {
     insertScore.run(score);
-  } catch {
+  } catch (exception) {
+    console.error(exception);
     return res.status(500).send();
   }
 
-  console.log("Created!");
   return res.status(200).send();
 }
 

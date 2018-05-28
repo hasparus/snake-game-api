@@ -1,9 +1,10 @@
 import * as bodyParser from 'body-parser';
-import express from 'express';
-import { AddressInfo } from 'net';
 import cors from 'cors';
+import express from 'express';
 import morgan from 'morgan';
+import { AddressInfo } from 'net';
 
+import './console';
 import * as scores from './scores';
 
 const VERSION = 'v1';
@@ -22,14 +23,11 @@ app.use((req, _, next) => {
 });
 */
 
-app.post(`/${VERSION}/scores`, (_, res) => {
-  console.log("Create!");
-  res.status(200).send("Ok");
-});
+app.post(`/${VERSION}/scores`, scores.create);
 app.get(`/${VERSION}/scores`, scores.list);
-app.get('/', (_, res) => res.status(200).send("Try /v1/scores. ;)"));
+app.get('/', (_, res) => res.status(200).send('Try /v1/scores. ;)'));
 
-const listener = app.listen(process.env.PORT, () => {
+const listener = app.listen(process.env.PORT || 3000, () => {
   console.log(
     `Your app is listening on ${
       (listener.address() as AddressInfo).port
