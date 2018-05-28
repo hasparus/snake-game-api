@@ -60,6 +60,8 @@ export function create(req: Request, res: Response) {
 
 const listScores = db.prepare(`
   SELECT * FROM scores
+    ORDER BY value DESC
+    LIMIT 10
 `);
 
 export function list(_: Request, res: Response) {
@@ -68,4 +70,22 @@ export function list(_: Request, res: Response) {
   } catch {
     return res.status(500).send();
   }
+}
+
+const wipeScores = db.prepare(`
+  DELETE FROM scores
+`);
+
+export function wipe(req: Request, res: Response) {
+  const secret = process.env.SECRET_FOR_WIPE;
+  if (req.body && secret && req.headers.authorization === secret) {
+    try {
+      setTimeout(() => wipeScores.run(), 1);
+      return res.status(200).send();
+    } catch (exception) {
+      console.error(exception);
+      return res.status(500).send();
+    }
+  }
+  return res.status(403).send();
 }

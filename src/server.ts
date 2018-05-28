@@ -4,8 +4,12 @@ import express from 'express';
 import morgan from 'morgan';
 import { AddressInfo } from 'net';
 
-import './console';
+import decorateConsoleFunctions from './console';
+import readEnvFile from './env';
 import * as scores from './scores';
+
+decorateConsoleFunctions();
+readEnvFile();
 
 const VERSION = 'v1';
 
@@ -25,6 +29,8 @@ app.use((req, _, next) => {
 
 app.post(`/${VERSION}/scores`, scores.create);
 app.get(`/${VERSION}/scores`, scores.list);
+app.delete(`/${VERSION}/scores`, scores.wipe);
+
 app.get('/', (_, res) => res.status(200).send('Try /v1/scores. ;)'));
 
 const listener = app.listen(process.env.PORT || 3000, () => {
